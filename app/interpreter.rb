@@ -12,33 +12,27 @@ class Interpreter
   def call
     case command
     when /^hi/i           then "Hi there :wave::skin-tone-4:"
-    when /^projects/i     then model_list TimestampAPI::Project.all
-    when /^clients/i      then model_list TimestampAPI::Client.all
-    when /^tasks/i        then model_list TimestampAPI::Task.all
-    when /^time_entries/i then model_list TimestampAPI::TimeEntry.all
-    when /^users/i        then model_list TimestampAPI::User.all
-    when /^help/i         then "Available\ commands:\n" + raw_list(%w{projects clients tasks time_entries users help})
+    when /^projects/i     then display TimestampAPI::Project.all
+    when /^clients/i      then display TimestampAPI::Client.all
+    when /^tasks/i        then display TimestampAPI::Task.all
+    when /^time_entries/i then display TimestampAPI::TimeEntry.all
+    when /^users/i        then display TimestampAPI::User.all
+    when /^help/i         then "Available\ commands: `projects`, `clients`, `tasks`, `time_entries`, `users`, `help`"
     else "Unknown command"
     end + "\n"
   end
 
   private
 
-  def raw_list(string_array)
-    string_array.map{ |line| "* #{line}" }.join("\n")
-  end
-
-  def model_list(model_array)
-    raw_list model_array.map{ |model| display(model) }
-  end
-
-  def display(model)
-    case model
-    when TimestampAPI::Project   then "[#{model.id}] `#{model.name}` | client `#{model.client.name}` (#{model.client.id})"
-    when TimestampAPI::Client    then "[#{model.id}] `#{model.name}`"
-    when TimestampAPI::Task      then "[#{model.id}] `#{model.name}` | project `#{model.project.name}` (#{model.project.id})"
-    when TimestampAPI::TimeEntry then "[#{model.id}] #{model.minutes}min | user: #{model.user.full_name} (#{model.user.id}) | project: #{model.project.name} (#{model.project.id})"
-    when TimestampAPI::User      then "[#{model.id}] #{model.full_name}"
+  def display(object)
+    case object
+    when Array                   then object.map{ |item| display(item) }.join("\n")
+    when TimestampAPI::Project   then "[#{object.id}] `#{object.name}` | client `#{object.client.name}` (#{object.client.id})"
+    when TimestampAPI::Client    then "[#{object.id}] `#{object.name}`"
+    when TimestampAPI::Task      then "[#{object.id}] `#{object.name}` | project `#{object.project.name}` (#{object.project.id})"
+    when TimestampAPI::TimeEntry then "[#{object.id}] `#{object.minutes}min` | user: #{object.user.full_name} (#{object.user.id}) | project: #{object.project.name} (#{object.project.id})"
+    when TimestampAPI::User      then "[#{object.id}] `#{object.full_name}`"
+    else object.to_s
     end
   end
 end
