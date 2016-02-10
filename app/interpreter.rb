@@ -17,7 +17,7 @@ class Interpreter
     when /^tasks/i        then model_list TimestampAPI::Task.all
     when /^time_entries/i then model_list TimestampAPI::TimeEntry.all
     when /^users/i        then model_list TimestampAPI::User.all
-    when /^help/i         then "Available\ commands:\n" + raw_list %w{projects clients tasks time_entries users help}
+    when /^help/i         then "Available\ commands:\n" + raw_list(%w{projects clients tasks time_entries users help})
     else "Unknown command"
     end + "\n"
   end
