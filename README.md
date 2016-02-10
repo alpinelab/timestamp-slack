@@ -12,8 +12,7 @@ To deploy this app to Heroku:
 
 ## Usage
 
-In Slack, enter `/timestamp Hi there`.
-It should greet back :smiley:
+In Slack, enter `/timestamp help` for available commands.
 
 ## License
 
